@@ -64,9 +64,9 @@ class APIClient:
         url: str = self.__url + uri
         auth: str = str(base64.b64encode(bytes(f'{self.user}:{self.password}', 'utf-8')), 'ascii').strip()
 
-        auth_header: tuple = 'Authorization', f'Basic {auth}'
-        agent_header: tuple = 'User-Agent', self.user_agent
-        con_type_json_header: tuple = 'Content-Type', 'application/json'
+        auth_header: tuple = ('Authorization', f'Basic {auth}')
+        agent_header: tuple = ('User-Agent', self.user_agent)
+        con_type_json_header: tuple = ('Content-Type', 'application/json')
 
         if method == 'POST':
             if uri[:14] == 'add_attachment':  # add_attachment API method
@@ -136,7 +136,7 @@ class APIClient:
             request_type.add_header(*ua_header)
 
     @staticmethod
-    def __upload_data_handler(fp: str) -> tuple[str, bytes]:
+    def __upload_data_handler(fp: str) -> tuple:
         """
         Urllib doesn't support the content type `multipart/form-data` natively.
         So it must be constructed separately.
@@ -172,7 +172,7 @@ class APIClient:
             body += 'Content-Type: {0}\r\n\r\n'.format(content_type).encode()
             body += file.read() + b'\r\n'
 
-        file_headers: str = 'Content-Type', 'multipart/form-data; boundary=' + boundary
+        file_headers: tuple = ('Content-Type', 'multipart/form-data; boundary=' + boundary)
         body += b'--' + boundary.encode() + b'--\r\n'
         return file_headers, body
 
